@@ -9,10 +9,11 @@ namespace Cell
 {
     public abstract class CellPart : Drawable
     {
+        public Cell Owner { get; }
 
-        public CellPart(Drawable parent, Color color, float x, float y) : base(parent, color, x, y)
+        public CellPart(Drawable parent, Cell owner, Color color, float x, float y) : base(parent, color, x, y)
         {
-
+            Owner = owner;
         }
     }
 }

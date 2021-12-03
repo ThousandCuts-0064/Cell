@@ -17,6 +17,7 @@ namespace Cell
         public static Menu Main { get; private set; }
         //public static int OffsetY { get; private set; }
         public static List<Drawable> Drawables { get; } = new List<Drawable>();
+        public static List<Projectile> Projectiles { get; } = new List<Projectile>();
         public static Cell MainPlayer { get; private set; }
         public static IReadOnlyList<Keys> PressedKeys => pressedKeys;
 
@@ -34,8 +35,10 @@ namespace Cell
 
         private void Menu_Paint(object sender, PaintEventArgs e)
         {
+            foreach (Projectile projectile in Projectiles) projectile.Advance();
             foreach (Drawable drawable in Drawables) drawable.Draw(e);
-            //e.Graphics.DrawString(OffsetY.ToString(), Font, new SolidBrush(Color.Black), 10, 10);
+            e.Graphics.DrawString(Projectiles.Count.ToString(), Font, new SolidBrush(Color.Black), 100, 100);
+            //e.Graphics.DrawString(Math.Atan2(1, 1).ToString(), Font, new SolidBrush(Color.Black), 100, 150);
         }
 
         private void Menu_KeyDown(object sender, KeyEventArgs e)
@@ -44,15 +47,25 @@ namespace Cell
             if (!pressedKeys.Contains(e.KeyData)) pressedKeys.Add(e.KeyData);
         }
 
+        private void Menu_MouseDown(object sender, MouseEventArgs e)
+        {
+            pressedKeys.Add(e.Button.ToKeys());
+        }
+
         private void Menu_KeyUp(object sender, KeyEventArgs e)
         {
             pressedKeys.Remove(e.KeyData);
         }
 
+        private void Menu_MouseUp(object sender, MouseEventArgs e)
+        {
+            pressedKeys.Remove(e.Button.ToKeys());
+        }
+
         private void Timer_Tick(object sender, EventArgs e)
         {
             //Text = $@"{Math.Round(MainPlayer.Rotation * 180 / Math.PI, 4, MidpointRounding.AwayFromZero)} PX: {MainPlayer.X} PY: {MainPlayer.Y} CX: {Cursor.Position.X} CY: {Cursor.Position.Y} DX: {Cursor.Position.X - MainPlayer.X} DY: {Cursor.Position.Y - MainPlayer.Y - RectangleToScreen(ClientRectangle).Y}";
-            foreach (Keys key in pressedKeys) MainPlayer.Action(key);
+            MainPlayer.Action(pressedKeys);
             MainPlayer.RotateTowards(Cursor.Position);
             Refresh();
         }

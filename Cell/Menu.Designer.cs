@@ -41,11 +41,12 @@ namespace Cell
             // 
             // Menu
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(784, 761);
+            this.ClientSize = new System.Drawing.Size(1045, 937);
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "Menu";
             this.Text = "Menu";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
@@ -54,6 +55,8 @@ namespace Cell
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.Menu_Paint);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Menu_KeyDown);
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Menu_KeyUp);
+            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Menu_MouseDown);
+            this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Menu_MouseUp);
             this.ResumeLayout(false);
 
         }
