@@ -6,8 +6,11 @@ using System.Threading.Tasks;
 
 namespace Cell
 {
+    public delegate void DieDelegate();
+
     public interface ILife
     {
+        event DieDelegate DieEvent;
         Drawable Owner { get; }
         float Health { get; }
 
@@ -16,6 +19,7 @@ namespace Cell
 
     public class Life : ILife
     {
+        public event DieDelegate DieEvent;
         public Drawable Owner { get; }
         public float Health { get; set; } = 100;
 
@@ -24,10 +28,15 @@ namespace Cell
             Owner = owner;
         }
 
+
         public void TakeDamage(IAttack attacker)
         {
             Health -= attacker.Damage;
-            if (Health < 0) Owner.Dispose();
+            if (Health < 0)
+            {
+                DieEvent.Invoke();
+                Owner.Dispose();
+            }
         }
     }
 }

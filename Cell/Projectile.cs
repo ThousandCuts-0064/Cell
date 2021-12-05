@@ -20,11 +20,11 @@ namespace Cell
             Drawable = drawable;
             Drawable.SetRotation(angle);
             RealAttack = attack;
+            Drawable.CollisionEvent += CollisionCheck;
         }
 
         public void Advance()
         {
-            //if (Drawable)
             Drawable.Move(speed);
         }
 
@@ -32,6 +32,11 @@ namespace Cell
         {
             Menu.Projectiles.Remove(this);
             Drawable.Dispose();
+        }
+
+        private void CollisionCheck(Drawable collider)
+        {
+            if (collider == Border.Reference) Dispose();
         }
     }
 }

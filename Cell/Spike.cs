@@ -29,7 +29,8 @@ namespace Cell
             RealAttack = new Attack(this);
             Array.Copy(defaultSize, referencePoints, 3);
             Array.Copy(referencePoints, localPoints, 3);
-            Array.Copy(localPoints, globalPoints, 3);
+            //Array.Copy(localPoints, globalPoints, 3);
+            OnMove();
             referenceJoint = defaultJoint;
             localJoint = referenceJoint;
             //float midHypotenuseX = (localPoints[0].X + localPoints[2].X) / 2;
@@ -45,7 +46,7 @@ namespace Cell
 
         public void Shoot()
         {
-            new Projectile(VisualClone(), RealAttack, Rotation, 2);
+            new Projectile(VisualClone(), RealAttack, Rotation, 20);
         }
 
         protected override void OnMove()
@@ -75,6 +76,19 @@ namespace Cell
             }
             localJoint = new PointF((float)(referenceJoint.X * Math.Cos(Rotation) - referenceJoint.Y * Math.Sin(Rotation)),
                                (float)(referenceJoint.X * Math.Sin(Rotation) + referenceJoint.Y * Math.Cos(Rotation)));
+        }
+
+        protected override Drawable CollisionCheck()
+        {
+            if (GlobalPoints[1].X < 0
+                || GlobalPoints[1].Y < 0
+                || GlobalPoints[1].X >= Menu.Main.Right
+                || GlobalPoints[1].Y >= Menu.Main.Bottom)
+            {
+                return Border.Reference;
+            }
+
+            return null;
         }
     }
 }

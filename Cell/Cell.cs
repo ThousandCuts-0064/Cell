@@ -24,7 +24,7 @@ namespace Cell
         }
 
         public override Drawable VisualClone() => new Cell(null, Brush.Color, X, Y, Radius);
-        public override void Draw(PaintEventArgs e) => e.Graphics.FillEllipse(Brush, X - Radius, Y - Radius, Radius * 2, Radius * 2);    
+        public override void Draw(PaintEventArgs e) => e.Graphics.FillEllipse(Brush, X - Radius, Y - Radius, Radius * 2, Radius * 2);
 
         public void Action(List<Keys> keys)
         {
@@ -57,6 +57,17 @@ namespace Cell
         {
             base.Dispose();
             foreach (Spike spike in spikes) spike.Dispose();
+        }
+
+        protected override Drawable CollisionCheck()
+        {
+            if (X - Radius < 0
+                || X + Radius >= Menu.Main.Right
+                || Y - Radius < 0
+                || Y + Radius >= Menu.Main.Bottom)
+                return Border.Reference;
+
+            return null;
         }
     }
 }

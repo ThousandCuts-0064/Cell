@@ -14,7 +14,8 @@ namespace Cell
         private float y;
         //protected PointF[] Points { get; set; }
         protected List<Drawable> Children { get; } = new List<Drawable>();
-        public static BorderReference Border { get; } = new BorderReference(null, Color.White, 0, 0);
+        public delegate void CollisionDelegate(Drawable collider);
+        public event CollisionDelegate CollisionEvent;
         public Drawable Parent { get; }
         public IReadOnlyList<Drawable> ReadChildren => Children;
         public SolidBrush Brush { get; }
@@ -31,7 +32,7 @@ namespace Cell
         }
         public float Y
         {
-            get => y; 
+            get => y;
             set
             {
                 y = value;
@@ -44,9 +45,16 @@ namespace Cell
             Menu.Drawables.Add(this);
             Brush = new SolidBrush(color);
             Parent = parent;
-            parent?.Children.Add(this);
-            this.x = x;
-            this.y = y;
+            if (parent == null)
+            {
+                this.x = x;
+                this.y = y;
+            }
+            else
+            {
+                parent.Children.Add(this);
+                SetXY(parent.X, parent.Y);
+            }
         }
 
         public abstract Drawable VisualClone();
@@ -108,12 +116,23 @@ namespace Cell
         public virtual void Dispose()
         {
             Brush.Dispose();
-            Parent.Children.Remove(this);
+            Parent?.Children.Remove(this);
             Menu.Drawables.Remove(this);
         }
 
-        protected virtual void OnRotation() { }
-        protected virtual void OnMove() { }
+        protected virtual void OnRotation()
+        {
+            Drawable collider = CollisionCheck();
+            if (collider != null) CollisionEvent?.Invoke(collider);
+        }
+
+        protected virtual void OnMove()
+        {
+            Drawable collider = CollisionCheck();
+            if (collider != null) CollisionEvent?.Invoke(collider);
+        }
+
+        protected abstract Drawable CollisionCheck();
 
         private void ChildAfterRotation(Drawable child) => child.SetXY((float)(Math.Sin(Rotation) * Radius), -(float)(Math.Cos(Rotation) * Radius));
     }
